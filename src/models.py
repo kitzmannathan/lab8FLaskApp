@@ -112,7 +112,7 @@ class UserModel:
                f'values ("{params.get("name")}","{params.get("email")}")'
 
        result = self.conn.execute(query)
-       return self.list_user()
+       return self.list_users()
 
    def list_users(self):
        query = f"SELECT * " \
