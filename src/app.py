@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from service import OrderService, UserService
+from service import CartService
 from models import Schema
 
 import json
@@ -13,48 +13,24 @@ def add_headers(response):
    response.headers['Access-Control-Allow-Methods']=  "POST, GET, PUT, DELETE, OPTIONS"
    return response
 
-@app.route("/")
-def hello():
-   return "Hello World!"
+@app.route("/addItemToCart", methods=["POST"])
+def add_item():
+   return CartService().add_item(request.get_json())
 
+@app.route("/getUserCart/<user_id>", methods=["GET"])
+def get_cart(user_id):
+   return jsonify(CartService().get_cart(user_id))
 
-@app.route("/<name>")
-def hello_name(name):
-   return "Hello " + name
+@app.route("/removeItemFromCart", methods=["DELETE"])
+def remove_item():
+   return jsonify(CartService().remove_item(request.get_json()))
 
-@app.route("/createOrder", methods=["POST"])
-def create_order():
-   return jsonify(OrderService().create(request.get_json()))
-
-@app.route("/getAll", methods=["GET"])
-def list_todo():
-   return jsonify(OrderService().list())
-
-@app.route("/updateOrder/<item_id>", methods=["PUT"])
-def update_item(item_id):
-   return jsonify(OrderService().update(item_id, request.get_json()))
-
-@app.route("/getOrderByID/<item_id>", methods=["GET"])
-def get_item(item_id):
-   return jsonify(OrderService().get_by_id(item_id))
-
-@app.route("/getOpenOrders", methods=["GET"])
-def get_open_item():
-   return jsonify(OrderService().get_open_orders())
-
-@app.route("/createUser", methods=["POST"])
-def create_user():
-   return jsonify(UserService().create(request.get_json()))
-
-@app.route("/listUsers", methods=["GET"])
-def list_users():
-   return jsonify(UserService().list_users())
-
-@app.route("/deleteUser/<user_id>", methods=["DELETE"])
-def delete_user(user_id):
-   return jsonify(UserService().delete_user(user_id))
+@app.route("/deleteCart/<user_id>", methods=["DELETE"])
+def delete_cart(user_id):
+   return jsonify(CartService().delete_cart(user_id))
 
 
 if __name__ == "__main__":
    Schema()
    app.run(debug=True, host='0.0.0.0', port=5000)
+
